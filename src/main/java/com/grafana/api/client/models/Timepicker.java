@@ -1,4 +1,3 @@
-
 package com.grafana.api.client.models;
 
 import java.io.Serializable;
@@ -12,7 +11,6 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true)
 public class Timepicker implements Serializable {
 
-    private List<String> refreshIntervals;
-    private List<String> timeOptions;
-
+  private List<String> refreshIntervals;
+  private List<String> timeOptions;
 }

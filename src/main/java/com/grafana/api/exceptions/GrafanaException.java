@@ -1,9 +1,8 @@
 /* Licensed under Apache-2.0 */
 package com.grafana.api.exceptions;
 
-import okhttp3.ResponseBody;
-
 import java.io.IOException;
+import okhttp3.ResponseBody;
 
 public class GrafanaException extends Exception {
 

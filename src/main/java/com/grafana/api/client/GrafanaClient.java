@@ -1,6 +1,8 @@
 /* Licensed under Apache-2.0 */
 package com.grafana.api.client;
 
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -11,20 +13,16 @@ import com.grafana.api.client.models.GrafanaSearchResult;
 import com.grafana.api.configuration.GrafanaConfiguration;
 import com.grafana.api.exceptions.GrafanaDashboardDoesNotExistException;
 import com.grafana.api.exceptions.GrafanaException;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
-
+import java.io.IOException;
+import java.util.List;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.io.IOException;
-import java.util.List;
-
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import okhttp3.OkHttpClient;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class GrafanaClient {
 
@@ -42,25 +40,27 @@ public class GrafanaClient {
   public GrafanaClient(GrafanaConfiguration configuration) {
     this(configuration, createOkHttpClient());
   }
+
   private static OkHttpClient createOkHttpClient() {
     try {
       // Create a trust manager that does not validate certificate chains
-      final TrustManager[] trustAllCerts = new TrustManager[]{
-              new X509TrustManager() {
-                @Override
-                public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-                }
+      final TrustManager[] trustAllCerts =
+          new TrustManager[] {
+            new X509TrustManager() {
+              @Override
+              public void checkClientTrusted(
+                  java.security.cert.X509Certificate[] chain, String authType) {}
 
-                @Override
-                public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-                }
+              @Override
+              public void checkServerTrusted(
+                  java.security.cert.X509Certificate[] chain, String authType) {}
 
-                @Override
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                  return new java.security.cert.X509Certificate[]{};
-                }
+              @Override
+              public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return new java.security.cert.X509Certificate[] {};
               }
-      };
+            }
+          };
 
       // Install the all-trusting trust manager
       final SSLContext sslContext = SSLContext.getInstance("SSL");
@@ -70,14 +70,13 @@ public class GrafanaClient {
       final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
       return new OkHttpClient.Builder()
-              .sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0])
-              .hostnameVerifier((hostname, session) -> true)
-              .build();
+          .sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0])
+          .hostnameVerifier((hostname, session) -> true)
+          .build();
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
-
 
   public GrafanaClient(GrafanaConfiguration configuration, OkHttpClient client) {
 
@@ -121,12 +120,11 @@ public class GrafanaClient {
       throw GrafanaException.withErrorBody(response.errorBody());
     }
   }
-  public List<GrafanaSearchResult> search(
-          String query, String tag)
-          throws GrafanaException, IOException {
 
-    Response<List<GrafanaSearchResult>> response =
-            service.search(apiKey, query, tag).execute();
+  public List<GrafanaSearchResult> search(String query, String tag)
+      throws GrafanaException, IOException {
+
+    Response<List<GrafanaSearchResult>> response = service.search(apiKey, query, tag).execute();
 
     if (response.isSuccessful()) {
       return response.body();
@@ -134,7 +132,4 @@ public class GrafanaClient {
       throw GrafanaException.withErrorBody(response.errorBody());
     }
   }
-
-
-
 }
