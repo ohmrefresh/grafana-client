@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'maven'
     id 'com.diffplug.gradle.spotless' version '3.25.0'
+    id 'com.github.sherter.google-java-format' version '0.8'
+    id 'org.unbroken-dome.test-sets' version '2.2.1'
 }
 
 
@@ -13,8 +15,6 @@ targetCompatibility = 1.8
 
 
 repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
     jcenter()
     mavenLocal()
     mavenCentral()
@@ -29,6 +29,9 @@ ext {
 }
 
 
+testSets {
+    integrationTest { dirName = 'integration-test' }
+}
 
 dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonVersion
@@ -36,9 +39,11 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
     compile group: 'com.squareup.retrofit2', name: 'retrofit', version: retrofitVersion
     compile group: 'com.squareup.retrofit2', name: 'converter-jackson', version: retrofitVersion
+    compile 'com.google.googlejavaformat:google-java-format:1.7'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
     testCompile "org.mockito:mockito-core:2.+"
     testCompile group: 'junit', name: 'junit', version: junitVersion
+    integrationTestImplementation 'com.github.tomakehurst:wiremock:2.19.0'
 }
 
 task sourceJar(type: Jar) {
@@ -49,9 +54,9 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
+
 spotless {
     java {
         googleJavaFormat()
-        licenseHeader '/* Licensed under Apache-2.0 */'
     }
 }

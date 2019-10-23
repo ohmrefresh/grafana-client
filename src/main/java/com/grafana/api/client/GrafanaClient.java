@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grafana.api.client.models.GrafanaDashboard;
+import com.grafana.api.client.models.GrafanaSearchResult;
 import com.grafana.api.configuration.GrafanaConfiguration;
 import com.grafana.api.exceptions.GrafanaDashboardDoesNotExistException;
 import com.grafana.api.exceptions.GrafanaException;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -20,6 +22,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
+import java.util.List;
 
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
@@ -118,6 +121,20 @@ public class GrafanaClient {
       throw GrafanaException.withErrorBody(response.errorBody());
     }
   }
+  public List<GrafanaSearchResult> search(
+          String query, String tag)
+          throws GrafanaException, IOException {
+
+    Response<List<GrafanaSearchResult>> response =
+            service.search(apiKey, query, tag).execute();
+
+    if (response.isSuccessful()) {
+      return response.body();
+    } else {
+      throw GrafanaException.withErrorBody(response.errorBody());
+    }
+  }
+
 
 
 }
