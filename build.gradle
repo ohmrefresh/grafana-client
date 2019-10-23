@@ -27,6 +27,9 @@ ext {
     jacksonVersion = '2.10.0'
     lombokVersion = '1.18.10'
     retrofitVersion = '2.6.2'
+    googleJavaFormatVersion='1.7'
+    mockitoCoreVersion='2.+'
+    wiremockVersion='2.19.0'
 }
 
 
@@ -40,12 +43,12 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
     compile group: 'com.squareup.retrofit2', name: 'retrofit', version: retrofitVersion
     compile group: 'com.squareup.retrofit2', name: 'converter-jackson', version: retrofitVersion
-    compile 'com.google.googlejavaformat:google-java-format:1.7'
+    compile group: 'com.google.googlejavaformat', name: 'google-java-format', version: googleJavaFormatVersion
     compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
-    testCompile "org.mockito:mockito-core:2.+"
+    testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoCoreVersion
     testCompile group: 'junit', name: 'junit', version: junitVersion
-    integrationTestImplementation 'com.github.tomakehurst:wiremock:2.19.0'
+    integrationTestImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: wiremockVersion
 }
 
 task sourceJar(type: Jar) {
