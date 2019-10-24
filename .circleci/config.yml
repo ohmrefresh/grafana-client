@@ -12,6 +12,7 @@ jobs:
       - run: gradle assemble
       - run: gradle run
       - run: gradle test
+      - run: gradle build jacocoTestReport
       - save_cache:
           paths:
             - ~/.gradle
@@ -22,3 +23,4 @@ jobs:
       - store_artifacts:
           path: build/libs
           destination: libs
+      - run: bash <(curl -s https://codecov.io/bash)
